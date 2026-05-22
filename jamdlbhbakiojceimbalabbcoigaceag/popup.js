@@ -1,1 +1,128 @@
-function sanitizeFilename(e){return e.replace(/[^\w\s-]/g,"").replace(/\s+/g,"_")}document.addEventListener("DOMContentLoaded",(function(){const e=document.getElementById("downloadBtn"),t=document.getElementById("status"),n=document.getElementById("limitMessage"),o=document.getElementById("progressBarContainer"),s=document.getElementById("progressBar"),a=document.getElementById("statusIndicator"),i=document.getElementById("statusText"),r=document.getElementById("statusActionButton"),l=document.getElementById("freeUserWarning");let c=!1;async function d(e=3){for(let n=0;n<e;n++){console.log(`[POPUP] Attempt ${n+1} to contact background script.`);try{const e=await chrome.runtime.sendMessage({action:"get_user_status"});if(console.log("[POPUP] Received response from background script:",e),chrome.runtime.lastError){const e=JSON.parse(JSON.stringify(chrome.runtime.lastError));throw console.error(`[POPUP] Attempt ${n+1}: Runtime error detected:`,e),new Error(e.message)}if(e&&void 0!==e.paid)return c=e.paid,console.log(`[POPUP] Success! isPremium is now: ${c}. Calling updateStatusUI.`),console.log(`[POPUP] updateStatusUI called. isPremium is currently: ${c}`),c?(a.className="premium",i.textContent="Premium User",r.style.display="none",l.style.display="none"):(a.className="free",i.textContent="Free User",r.style.display="inline-block",r.textContent="GO PREMIUM / LOGIN",r.className="goPremiumBtn",l.style.display="block"),void console.log(`[POPUP] UI Updated. statusText is now: "${i.textContent}"`);console.warn(`[POPUP] Attempt ${n+1}: Received an invalid response:`,e)}catch(o){console.warn(`[POPUP] Attempt ${n+1} failed to get user status. Error: ${o.message}`),n<e-1?(console.log("[POPUP] Waiting 500ms before retrying..."),await new Promise((e=>setTimeout(e,500)))):(console.error("[POPUP] All retries failed. Could not reach background script."),t.textContent="Error checking premium status. Please try reloading the extension.",t.className="status error")}}}console.log("[POPUP] Popup loaded. Calling checkUserStatus..."),d(),chrome.tabs.query({active:!0,currentWindow:!0},(function(n){const o=n[0].url;o.includes("imdb.com/")&&o.includes("/mediaindex")?e.disabled=!1:(t.innerHTML='Navigate to an IMDB gallery page to use this extension. (e.g. <a href="https://www.imdb.com/title/tt22741760/mediaindex/?ref_=mv?ref_=mv_sm" target="_blank">This page</a>)',e.disabled=!0)})),r.addEventListener("click",(function(){console.log("[POPUP] Opening payment/login page..."),chrome.runtime.sendMessage({action:"open_payment_page"})})),e.addEventListener("click",(async function(){t.textContent="Extracting image links... DON'T touch anything!",t.className="status info",e.disabled=!0,n.style.display="none",o.style.display="none";try{const[a]=await chrome.tabs.query({active:!0,currentWindow:!0}),i=await chrome.tabs.sendMessage(a.id,{action:"extractImages"});if(!i||!i.success)throw new Error(i?.error||"Could not extract images from the page.");let{title:r,images:l}=i;if(0===l.length)return t.textContent="No images found on this page.",t.className="status error",void(e.disabled=!1);await d(1),console.log(`[POPUP] DOWNLOAD CHECK: isPremium is ${c} before starting download.`),!c&&l.length>10&&(l=l.slice(0,10),n.textContent="This gallery has more than 10 images. Upgrade to download them all.",n.style.display="block");const m=new JSZip,u=m.folder(sanitizeFilename(r));o.style.display="block",s.style.width="0%";for(let e=0;e<l.length;e++){const n=l[e];t.textContent=`Fetching image ${e+1} of ${l.length}...`;const o=(e+1)/l.length*100;s.style.width=`${o}%`,s.textContent=`${Math.round(o)}%`;const a=await fetch(n.url);if(!a.ok)throw new Error(`Failed to fetch ${n.url}`);const i=await a.blob(),r=n.url.split(".").pop().split("?")[0]||"jpg",c=`${String(e+1).padStart(3,"0")}_${sanitizeFilename(n.caption)}.${r}`;u.file(c,i)}t.textContent="Creating zip file...";const g=await m.generateAsync({type:"blob"}),p=URL.createObjectURL(g),y=document.createElement("a");y.href=p,y.download=`${sanitizeFilename(r)}.zip`,document.body.appendChild(y),y.click(),document.body.removeChild(y),URL.revokeObjectURL(p),t.textContent=`Successfully downloaded ${l.length} images!`,t.className="status success"}catch(e){console.error(e),t.textContent=`Error: ${e.message}`,t.className="status error"}finally{e.disabled=!1,o.style.display="none"}}))}));
+function sanitizeFilename(e) {
+  return e.replace(/[^\w\s-]/g, '').replace(/\s+/g, '_');
+}
+document.addEventListener('DOMContentLoaded', function () {
+  const e = document.getElementById('downloadBtn'),
+    t = document.getElementById('status'),
+    n = document.getElementById('limitMessage'),
+    o = document.getElementById('progressBarContainer'),
+    s = document.getElementById('progressBar'),
+    a = document.getElementById('statusIndicator'),
+    i = document.getElementById('statusText'),
+    r = document.getElementById('statusActionButton'),
+    l = document.getElementById('freeUserWarning');
+  let c = !1;
+  async function d(e = 3) {
+    for (let n = 0; n < e; n++) {
+      console.log(`[POPUP] Attempt ${n + 1} to contact background script.`);
+      try {
+        const e = await chrome.runtime.sendMessage({ action: 'get_user_status' });
+        if (
+          (console.log('[POPUP] Received response from background script:', e),
+          chrome.runtime.lastError)
+        ) {
+          const e = JSON.parse(JSON.stringify(chrome.runtime.lastError));
+          throw (
+            console.error(`[POPUP] Attempt ${n + 1}: Runtime error detected:`, e),
+            new Error(e.message)
+          );
+        }
+        if (e && void 0 !== e.paid)
+          return (
+            (c = e.paid),
+            console.log(`[POPUP] Success! isPremium is now: ${c}. Calling updateStatusUI.`),
+            console.log(`[POPUP] updateStatusUI called. isPremium is currently: ${c}`),
+            c
+              ? ((a.className = 'premium'),
+                (i.textContent = 'Premium User'),
+                (r.style.display = 'none'),
+                (l.style.display = 'none'))
+              : ((a.className = 'free'),
+                (i.textContent = 'Free User'),
+                (r.style.display = 'inline-block'),
+                (r.textContent = 'GO PREMIUM / LOGIN'),
+                (r.className = 'goPremiumBtn'),
+                (l.style.display = 'block')),
+            void console.log(`[POPUP] UI Updated. statusText is now: "${i.textContent}"`)
+          );
+        console.warn(`[POPUP] Attempt ${n + 1}: Received an invalid response:`, e);
+      } catch (o) {
+        (console.warn(`[POPUP] Attempt ${n + 1} failed to get user status. Error: ${o.message}`),
+          n < e - 1
+            ? (console.log('[POPUP] Waiting 500ms before retrying...'),
+              await new Promise((e) => setTimeout(e, 500)))
+            : (console.error('[POPUP] All retries failed. Could not reach background script.'),
+              (t.textContent =
+                'Error checking premium status. Please try reloading the extension.'),
+              (t.className = 'status error')));
+      }
+    }
+  }
+  (console.log('[POPUP] Popup loaded. Calling checkUserStatus...'),
+    d(),
+    chrome.tabs.query({ active: !0, currentWindow: !0 }, function (n) {
+      const o = n[0].url;
+      o.includes('imdb.com/') && o.includes('/mediaindex')
+        ? (e.disabled = !1)
+        : ((t.innerHTML =
+            'Navigate to an IMDB gallery page to use this extension. (e.g. <a href="https://www.imdb.com/title/tt22741760/mediaindex/?ref_=mv?ref_=mv_sm" target="_blank">This page</a>)'),
+          (e.disabled = !0));
+    }),
+    r.addEventListener('click', function () {
+      (console.log('[POPUP] Opening payment/login page...'),
+        chrome.runtime.sendMessage({ action: 'open_payment_page' }));
+    }),
+    e.addEventListener('click', async function () {
+      ((t.textContent = "Extracting image links... DON'T touch anything!"),
+        (t.className = 'status info'),
+        (e.disabled = !0),
+        (n.style.display = 'none'),
+        (o.style.display = 'none'));
+      try {
+        const [a] = await chrome.tabs.query({ active: !0, currentWindow: !0 }),
+          i = await chrome.tabs.sendMessage(a.id, { action: 'extractImages' });
+        if (!i || !i.success)
+          throw new Error(i?.error || 'Could not extract images from the page.');
+        let { title: r, images: l } = i;
+        if (0 === l.length)
+          return (
+            (t.textContent = 'No images found on this page.'),
+            (t.className = 'status error'),
+            void (e.disabled = !1)
+          );
+        (await d(1),
+          console.log(`[POPUP] DOWNLOAD CHECK: isPremium is ${c} before starting download.`));
+        const m = new JSZip(),
+          u = m.folder(sanitizeFilename(r));
+        ((o.style.display = 'block'), (s.style.width = '0%'));
+        for (let e = 0; e < l.length; e++) {
+          const n = l[e];
+          t.textContent = `Fetching image ${e + 1} of ${l.length}...`;
+          const o = ((e + 1) / l.length) * 100;
+          ((s.style.width = `${o}%`), (s.textContent = `${Math.round(o)}%`));
+          const a = await fetch(n.url);
+          if (!a.ok) throw new Error(`Failed to fetch ${n.url}`);
+          const i = await a.blob(),
+            r = n.url.split('.').pop().split('?')[0] || 'jpg',
+            c = `${String(e + 1).padStart(3, '0')}_${sanitizeFilename(n.caption)}.${r}`;
+          u.file(c, i);
+        }
+        t.textContent = 'Creating zip file...';
+        const g = await m.generateAsync({ type: 'blob' }),
+          p = URL.createObjectURL(g),
+          y = document.createElement('a');
+        ((y.href = p),
+          (y.download = `${sanitizeFilename(r)}.zip`),
+          document.body.appendChild(y),
+          y.click(),
+          document.body.removeChild(y),
+          URL.revokeObjectURL(p),
+          (t.textContent = `Successfully downloaded ${l.length} images!`),
+          (t.className = 'status success'));
+      } catch (e) {
+        (console.error(e), (t.textContent = `Error: ${e.message}`), (t.className = 'status error'));
+      } finally {
+        ((e.disabled = !1), (o.style.display = 'none'));
+      }
+    }));
+});
