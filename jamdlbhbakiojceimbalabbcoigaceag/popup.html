@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body {
+      width: 300px;
+      padding: 10px;
+      font-family: Arial, sans-serif;
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    /* Styles for the status indicator */
+    #statusIndicator {
+      display: flex;
+      flex-direction: column; /* Changed to column to stack elements */
+      padding: 8px;
+      border-radius: 4px;
+      margin-bottom: 10px;
+    }
+    #statusIndicator .top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+    }
+    #statusIndicator.free {
+      background-color: #f8d7da;
+      border: 1px solid #f5c6cb;
+      color: #721c24;
+    }
+    #statusIndicator.premium {
+      background-color: #d4edda;
+      border: 1px solid #c3e6cb;
+      color: #155724;
+    }
+    #statusIndicator button {
+      padding: 4px 8px;
+      font-size: 12px;
+      border-radius: 3px;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    #statusIndicator .goPremiumBtn {
+      background-color: #007bff;
+      color: white;
+    }
+    #statusIndicator .goPremiumBtn:hover {
+      background-color: #0056b3;
+    }
+    #statusIndicator .logoutBtn {
+      background-color: #6c757d;
+      color: white;
+    }
+    #statusIndicator .logoutBtn:hover {
+      background-color: #5a6268;
+    }
+    /* New style for the warning text */
+    #freeUserWarning {
+      font-size: 11px;
+      margin-top: 8px;
+      line-height: 1.4;
+      text-align: center;
+    }
+    button {
+      padding: 10px;
+      background-color: #f5c518;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    button:hover {
+      background-color: #e5b518;
+    }
+    button:disabled {
+      background-color: #cccccc;
+      cursor: not-allowed;
+    }
+    .status {
+      margin-top: 10px;
+      font-size: 14px;
+    }
+    .error {
+      color: red;
+    }
+    .success {
+      color: green;
+    }
+    .info {
+      color: #0066cc;
+    }
+    #progressBarContainer {
+      width: 100%;
+      background-color: #f0f0f0;
+      border-radius: 4px;
+      margin-top: 10px;
+      display: none;
+    }
+    #progressBar {
+      width: 0%;
+      height: 20px;
+      background-color: #4CAF50;
+      border-radius: 4px;
+      text-align: center;
+      line-height: 20px;
+      color: white;
+      font-size: 12px;
+      transition: width 0.3s ease;
+    }
+    #limitMessage {
+      text-align: center;
+      font-weight: bold;
+      color: #d9534f;
+    }
+  </style>
+  <script src="jszip.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h3>IMDB Gallery Downloader</h3>
+
+    <!-- Status Indicator -->
+    <div id="statusIndicator">
+      <div class="top-row">
+        <span id="statusText">Checking status...</span>
+        <button id="statusActionButton" class="goPremiumBtn">GO PREMIUM / LOGIN</button>
+      </div>
+      <!-- Warning text for free users -->
+      <div id="freeUserWarning">
+        ⚠️ Free users can only download 10 images max from galleries. Upgrade to premium to download full galleries.
+      </div>
+    </div>
+
+    <div id="status" class="status info">Navigate to an IMDB gallery page to use this extension. (e.g. <a href="https://www.imdb.com/title/tt22741760/mediaindex/?ref_=mv?ref_=mv_sm" target="_blank">this page</a>)</div>
+    
+    <div id="progressBarContainer">
+      <div id="progressBar"></div>
+    </div>
+
+    <div id="limitMessage" style="display: none;"></div>
+    
+    <button id="downloadBtn" disabled>Download Gallery Images</button>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>
