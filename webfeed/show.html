@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebFeed Show Feed</title>
+    <link rel="icon" href="./icons/icon.png">
+    <link rel="stylesheet" href="./css/water.css">
+    <link rel="stylesheet" href="./css/header.css">
+    <link rel="stylesheet" href="./css/show.css">
+    <script src="./js/show.js" defer type="module"></script>
+  </head>
+  <body>
+    <main>
+      <header>
+        <h1><a href="list.html">WebFeed</a></h1>
+        <a class="menu-item" href="feeds.html">📡Feeds</a>
+        <a class="menu-item" href="logs.html">🔬Logs</a>
+        <a class="menu-item" href="options.html">⚙️Options</a>
+      </header>
+      <div class="header">
+        <h2></h2>
+        <img id="site-icon" src="">
+        <a id="site-link" href=""></a>
+        <subscribe-button></subscribe-button>
+      </div>
+      <div class="items"></div>
+    </main>
+    <template id="feed-item">
+      <article>
+        <h2></h2>
+        <time></time>
+        <div class="summary"></div>
+        <a class="link" href="">Read more...</a>
+      </article>
+    </template>
+  </body>
+</html>

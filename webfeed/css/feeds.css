@@ -1,0 +1,14 @@
+.items > li > span {
+  display: flex;
+  align-items: center;
+}
+
+.items > li img {
+  width: 1em;
+  max-height: 1em;
+  margin-right: 2px;
+}
+
+#import-file {
+  display: none;
+}

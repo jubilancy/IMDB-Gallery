@@ -1,0 +1,50 @@
+body {
+  max-width: 600px;
+  margin: 0 auto;
+  font-size: 1em;
+}
+
+subscribe-button {
+  user-select: none;
+  cursor: pointer;
+  border-radius: 0.25rem;
+  background: #0076d1;
+  color: #fff;
+  padding: 0.25rem 0.5rem;
+  display: none;
+}
+
+article > h2 {
+  font-weight: 300;
+  margin-bottom: 8px;
+}
+
+article .summary {
+  margin-top: 0.3em;
+  max-height: 6em;
+  max-height: 5lh;
+  overflow: hidden;
+}
+
+article .summary > * {
+  overflow-x: scroll;
+}
+
+a.link {
+  display: inline-block;
+  padding: 0.5em 0;
+}
+
+#site-icon {
+  width: 1em;
+  max-height: 1em;
+  display: inline-block;
+}
+
+#site-icon, #site-link, subscribe-button {
+  vertical-align: middle;
+}
+
+body > .error {
+  color:red;
+}

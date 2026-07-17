@@ -1,0 +1,22 @@
+body {
+  max-width: 50rem;
+  font-size: 1em;
+  padding: 0;
+  margin: 0;
+}
+
+.items {
+  padding: 0.2rem;
+}
+
+.items__item-link {
+  display: block;
+  position: relative;
+  padding: 0.2rem 0.4rem;
+  text-wrap: nowrap;
+}
+
+.items__item + .items__item {
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
